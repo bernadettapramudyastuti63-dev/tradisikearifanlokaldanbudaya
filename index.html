@@ -1,0 +1,1372 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jelajah Budaya Nusantara - Kuis Pendidikan Pancasila Kelas IX SMP</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Plus Jakarta Sans & Fredoka untuk nuansa ceria namun tetap sangat terbaca -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #d97706; /* Amber/Emas Nusantara */
+            --secondary: #0d9488; /* Teal Zamrud Khatulistiwa */
+            --accent: #e11d48; /* Merah Terakota/Batik */
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #fffbeb;
+            background-image: 
+                radial-gradient(circle at 15% 15%, rgba(251, 191, 36, 0.18) 0%, transparent 40%),
+                radial-gradient(circle at 85% 85%, rgba(20, 184, 166, 0.16) 0%, transparent 45%),
+                url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d97706' fill-opacity='0.06'%3E%3Cpath d='M30 0l15 15-15 15-15-15L30 0zm0 30l15 15-15 15-15-15 15-15zM0 30l15 15L0 60V30zm60 0L45 45l15 15V30z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            min-height: 100vh;
+            color: #1e293b;
+        }
+
+        .font-display {
+            font-family: 'Fredoka', sans-serif;
+        }
+
+        /* Animasi Kustom */
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-6px); }
+        }
+
+        @keyframes popIn {
+            0% { opacity: 0; transform: scale(0.92) translateY(10px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        @keyframes shakeSoft {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-6px); }
+            40%, 80% { transform: translateX(6px); }
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(225, 29, 72, 0.4); }
+            50% { box-shadow: 0 0 0 10px rgba(225, 29, 72, 0); }
+        }
+
+        .animate-float {
+            animation: floatSlow 3.5s ease-in-out infinite;
+        }
+
+        .animate-pop {
+            animation: popIn 0.38s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .animate-shake {
+            animation: shakeSoft 0.45s ease-in-out;
+        }
+
+        .timer-urgent {
+            animation: pulseGlow 1s infinite;
+        }
+
+        /* Gaya Tombol Pilihan */
+        .option-btn {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .option-btn:not(:disabled):hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 18px -4px rgba(217, 119, 6, 0.22);
+        }
+
+        .option-btn:not(:disabled):active {
+            transform: translateY(0px);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #fef3c7;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #f59e0b;
+            border-radius: 9999px;
+        }
+
+        /* Confetti Canvas */
+        #confetti-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 50;
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center p-3 sm:p-6 selection:bg-amber-200 selection:text-amber-900">
+
+    <!-- Canvas Confetti untuk Efek Selebrasi -->
+    <canvas id="confetti-canvas"></canvas>
+
+    <!-- Kontrol Suara Mengambang di Pojok Kanan Atas -->
+    <div class="fixed top-3 right-3 sm:top-5 sm:right-5 z-40">
+        <button id="btn-sound-toggle" onclick="toggleSound()" title="Suara Efek"
+            class="flex items-center gap-2 bg-white/90 backdrop-blur-md border-2 border-amber-300 text-amber-800 hover:bg-amber-50 px-3.5 py-2 rounded-full shadow-md font-semibold text-sm transition">
+            <span id="sound-icon" class="text-lg">🔊</span>
+            <span class="hidden sm:inline" id="sound-label">Suara Aktif</span>
+        </button>
+    </div>
+
+    <!-- KONTAINER UTAMA APLIKASI -->
+    <main class="w-full max-w-4xl mx-auto">
+
+        <!-- ========================================================= -->
+        <!-- 1. HALAMAN PEMBUKA (START SCREEN)                         -->
+        <!-- ========================================================= -->
+        <section id="start-screen" class="bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl border-4 border-amber-300/80 overflow-hidden animate-pop">
+            <!-- Banner Ilustrasi Nusantara Header -->
+            <div class="relative bg-gradient-to-r from-amber-500 via-orange-500 to-rose-600 p-6 sm:p-10 text-white overflow-hidden">
+                <!-- Ornamen Motif Kawung Halus -->
+                <div class="absolute inset-0 opacity-15 pointer-events-none">
+                    <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <pattern id="kawung" width="40" height="40" patternUnits="userSpaceOnUse">
+                                <circle cx="20" cy="10" r="8" fill="none" stroke="#fff" stroke-width="2"/>
+                                <circle cx="20" cy="30" r="8" fill="none" stroke="#fff" stroke-width="2"/>
+                                <circle cx="10" cy="20" r="8" fill="none" stroke="#fff" stroke-width="2"/>
+                                <circle cx="30" cy="20" r="8" fill="none" stroke="#fff" stroke-width="2"/>
+                            </pattern>
+                        </defs>
+                        <rect width="100%" height="100%" fill="url(#kawung)"/>
+                    </svg>
+                </div>
+
+                <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
+                    <div class="text-center md:text-left space-y-3 flex-1">
+                        <span class="inline-flex items-center gap-1.5 bg-white/20 backdrop-blur-md border border-white/40 text-white text-xs sm:text-sm font-bold px-4 py-1.5 rounded-full tracking-wide uppercase">
+                            <span>🇮🇩</span> Pendidikan Pancasila • Kelas IX SMP
+                        </span>
+                        <h1 class="font-display text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight drop-shadow-sm">
+                            JELAJAH BUDAYA NUSANTARA
+                        </h1>
+                        <p class="text-amber-100 font-semibold text-base sm:text-xl">
+                            Tradisi, Kearifan Lokal, dan Budaya Indonesia
+                        </p>
+                    </div>
+
+                    <!-- Ilustrasi SVG Nusantara (Rumah Gadang, Tongkonan, Angklung & Batik) -->
+                    <div class="w-48 sm:w-56 flex-shrink-0 animate-float">
+                        <svg viewBox="0 0 240 190" class="w-full h-auto drop-shadow-lg" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Matahari / Latar Lingkaran -->
+                            <circle cx="120" cy="95" r="82" fill="#fef3c7" opacity="0.95"/>
+                            <circle cx="120" cy="95" r="72" fill="none" stroke="#f59e0b" stroke-width="2" stroke-dasharray="6 4"/>
+                            
+                            <!-- Siluet Gunung & Awan -->
+                            <path d="M48 135 L95 75 L135 120 L162 85 L195 135 Z" fill="#14b8a6" opacity="0.35"/>
+                            
+                            <!-- Rumah Adat Gadang (Kiri) -->
+                            <g transform="translate(38, 68)">
+                                <!-- Atap Gonjong -->
+                                <path d="M5 42 Q25 38 35 10 Q42 35 55 35 Q68 35 75 10 Q85 38 105 42 L95 52 L15 52 Z" fill="#dc2626"/>
+                                <path d="M12 43 Q28 39 36 16 Q42 37 55 37 Q68 37 74 16 Q82 39 98 43" fill="none" stroke="#fbbf24" stroke-width="2.5"/>
+                                <!-- Badan Rumah -->
+                                <rect x="22" y="52" width="66" height="34" rx="3" fill="#78350f"/>
+                                <rect x="28" y="57" width="54" height="22" fill="#f59e0b"/>
+                                <!-- Jendela & Ukiran -->
+                                <rect x="35" y="61" width="10" height="14" rx="1" fill="#451a03"/>
+                                <rect x="50" y="61" width="10" height="14" rx="1" fill="#451a03"/>
+                                <rect x="65" y="61" width="10" height="14" rx="1" fill="#451a03"/>
+                                <!-- Tiang -->
+                                <rect x="25" y="86" width="6" height="14" fill="#451a03"/>
+                                <rect x="52" y="86" width="6" height="14" fill="#451a03"/>
+                                <rect x="79" y="86" width="6" height="14" fill="#451a03"/>
+                            </g>
+
+                            <!-- Angklung / Alat Musik Bambu (Kanan Depan) -->
+                            <g transform="translate(148, 82) rotate(6)">
+                                <rect x="5" y="45" width="44" height="6" rx="3" fill="#d97706"/>
+                                <rect x="10" y="10" width="4" height="52" rx="2" fill="#92400e"/>
+                                <rect x="24" y="5" width="4" height="57" rx="2" fill="#92400e"/>
+                                <rect x="38" y="14" width="4" height="48" rx="2" fill="#92400e"/>
+                                <!-- Tabung Bambu -->
+                                <path d="M14 22 L22 16 L22 45 L14 45 Z" fill="#fde68a" stroke="#b45309" stroke-width="1.5"/>
+                                <path d="M28 28 L36 22 L36 45 L28 45 Z" fill="#fde68a" stroke="#b45309" stroke-width="1.5"/>
+                            </g>
+
+                            <!-- Tanah / Gelombang Nusantara -->
+                            <path d="M42 165 Q120 152 198 165 Q165 182 120 182 Q75 182 42 165 Z" fill="#0d9488"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Konten Pengantar & Aturan Main -->
+            <div class="p-6 sm:p-8 space-y-6">
+                <div class="bg-amber-50/90 border-2 border-amber-200 rounded-2xl p-4 sm:p-5 text-slate-700 leading-relaxed">
+                    <p class="font-medium text-sm sm:text-base">
+                        Selamat datang, Petualang Muda Nusantara! 🧭 Mari uji wawasanmu tentang kekayaan <strong>tradisi, budaya, dan kearifan lokal Indonesia</strong> dari Sabang sampai Merauke. Jawab setiap tantangan literasi dan studi kasus dengan cermat untuk meraih gelar terbaik!
+                    </p>
+                </div>
+
+                <!-- Kartu Info Aturan Kuis -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+                    <div class="bg-teal-50 border-2 border-teal-200 rounded-2xl p-3.5 text-center">
+                        <div class="text-2xl sm:text-3xl mb-1">📝</div>
+                        <div class="font-display font-bold text-teal-800 text-lg">20 Soal</div>
+                        <div class="text-xs text-teal-600 font-medium">Pilihan Ganda</div>
+                    </div>
+                    <div class="bg-rose-50 border-2 border-rose-200 rounded-2xl p-3.5 text-center">
+                        <div class="text-2xl sm:text-3xl mb-1">⏱️</div>
+                        <div class="font-display font-bold text-rose-800 text-lg">20 Detik</div>
+                        <div class="text-xs text-rose-600 font-medium">Waktu per Soal</div>
+                    </div>
+                    <div class="bg-amber-50 border-2 border-amber-200 rounded-2xl p-3.5 text-center">
+                        <div class="text-2xl sm:text-3xl mb-1">💡</div>
+                        <div class="font-display font-bold text-amber-800 text-lg">Langsung</div>
+                        <div class="text-xs text-amber-600 font-medium">Pembahasan Edukatif</div>
+                    </div>
+                    <div class="bg-indigo-50 border-2 border-indigo-200 rounded-2xl p-3.5 text-center">
+                        <div class="text-2xl sm:text-3xl mb-1">🏆</div>
+                        <div class="font-display font-bold text-indigo-800 text-lg">Skor 100</div>
+                        <div class="text-xs text-indigo-600 font-medium">Predikat & Lencana</div>
+                    </div>
+                </div>
+
+                <!-- Cakupan Materi Singkat -->
+                <div class="flex flex-wrap gap-2 justify-center text-xs font-semibold text-slate-600">
+                    <span class="bg-slate-100 px-3 py-1 rounded-full">✨ Konsep Budaya & Tradisi</span>
+                    <span class="bg-slate-100 px-3 py-1 rounded-full">🌿 Kearifan Lokal Daerah</span>
+                    <span class="bg-slate-100 px-3 py-1 rounded-full">🌏 Peran di Era Global</span>
+                    <span class="bg-slate-100 px-3 py-1 rounded-full">🛡️ Pelestarian Generasi Muda</span>
+                </div>
+
+                <!-- Tombol MULAI -->
+                <div class="pt-2 text-center">
+                    <button onclick="startQuiz()"
+                        class="w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white font-display font-bold text-xl sm:text-2xl px-12 py-4 rounded-2xl shadow-xl shadow-teal-600/30 transform hover:-translate-y-1 active:translate-y-0 transition-all cursor-pointer">
+                        <span>MULAI JELAJAH</span>
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- 2. LAYAR KUIS INTERAKTIF (QUIZ SCREEN)                    -->
+        <!-- ========================================================= -->
+        <section id="quiz-screen" class="hidden space-y-4">
+            
+            <!-- Header Status: Nomor Soal, Progress Bar, Skor, Timer -->
+            <div class="bg-white/95 backdrop-blur-md rounded-2xl shadow-lg border-2 border-amber-200 p-4 sm:px-6">
+                <div class="flex flex-wrap items-center justify-between gap-3 mb-3">
+                    <!-- Nomor Soal -->
+                    <div class="flex items-center gap-2.5">
+                        <span class="bg-amber-500 text-white font-display font-bold text-sm sm:text-base px-3.5 py-1 rounded-xl shadow-sm">
+                            Soal <span id="current-q-num">1</span> / 20
+                        </span>
+                        <span id="difficulty-badge" class="text-xs font-bold px-2.5 py-1 rounded-lg bg-emerald-100 text-emerald-800 border border-emerald-300">
+                            Mudah
+                        </span>
+                    </div>
+
+                    <!-- Skor & Timer -->
+                    <div class="flex items-center gap-3 sm:gap-4">
+                        <!-- Indikator Skor -->
+                        <div class="flex items-center gap-1.5 bg-teal-50 border border-teal-200 px-3 py-1.5 rounded-xl">
+                            <span class="text-base">⭐</span>
+                            <span class="text-xs font-bold text-teal-700 uppercase">Skor:</span>
+                            <span id="live-score" class="font-display font-bold text-teal-800 text-base sm:text-lg">0</span>
+                        </div>
+
+                        <!-- Timer Mundur 20 Detik -->
+                        <div id="timer-box" class="flex items-center gap-1.5 bg-amber-50 border-2 border-amber-300 px-3.5 py-1.5 rounded-xl transition-colors">
+                            <span class="text-base">⏳</span>
+                            <span id="timer-text" class="font-display font-bold text-amber-800 text-base sm:text-lg tabular-nums">20</span>
+                            <span class="text-xs font-bold text-amber-700">dtk</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden p-0.5 border border-slate-200">
+                    <div id="progress-bar" class="bg-gradient-to-r from-amber-500 via-orange-500 to-teal-500 h-full rounded-full transition-all duration-500 ease-out" style="width: 5%"></div>
+                </div>
+            </div>
+
+            <!-- Kartu Soal & Pilihan Jawaban -->
+            <div id="question-card" class="bg-white/95 backdrop-blur-md rounded-3xl shadow-xl border-2 border-amber-200/90 p-5 sm:p-8 space-y-5 animate-pop">
+                
+                <!-- Tag Materi -->
+                <div class="flex items-center gap-2 text-xs sm:text-sm font-bold text-amber-700">
+                    <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+                    <span id="topic-label">Materi 1: Pengertian Tradisi, Budaya, dan Kearifan Lokal</span>
+                </div>
+
+                <!-- Kontainer Ilustrasi SVG Kontekstual (Opsional per Soal) -->
+                <div id="illustration-container" class="hidden bg-gradient-to-br from-amber-50 via-orange-50/70 to-teal-50 border-2 border-amber-200/80 rounded-2xl p-4 flex flex-col sm:flex-row items-center gap-4">
+                    <div id="illustration-svg" class="w-36 sm:w-40 flex-shrink-0 flex justify-center"></div>
+                    <div id="illustration-caption" class="text-xs sm:text-sm text-slate-600 italic text-center sm:text-left font-medium"></div>
+                </div>
+
+                <!-- Teks Bacaan / Kasus & Pertanyaan -->
+                <div class="space-y-3">
+                    <div id="case-box" class="hidden bg-slate-50 border-l-4 border-teal-500 p-4 rounded-r-xl text-slate-700 text-sm sm:text-base leading-relaxed">
+                    </div>
+                    <h2 id="question-text" class="text-lg sm:text-xl font-bold text-slate-800 leading-snug">
+                        Memuat pertanyaan...
+                    </h2>
+                </div>
+
+                <!-- 4 Tombol Pilihan Jawaban (A, B, C, D) -->
+                <div id="options-container" class="grid grid-cols-1 gap-3 pt-1">
+                    <!-- Diisi dinamis oleh JS -->
+                </div>
+
+                <!-- Kotak Umpan Balik & Pembahasan Langsung -->
+                <div id="feedback-box" class="hidden rounded-2xl p-5 border-2 space-y-3 animate-pop">
+                    <div class="flex items-center justify-between gap-2">
+                        <div class="flex items-center gap-2.5">
+                            <span id="feedback-icon" class="text-2xl">✅</span>
+                            <h3 id="feedback-title" class="font-display font-bold text-lg sm:text-xl">Jawaban Benar! +5 Poin</h3>
+                        </div>
+                    </div>
+                    <div class="text-sm sm:text-base leading-relaxed bg-white/80 p-3.5 rounded-xl border border-black/5">
+                        <span class="font-bold text-slate-800">💡 Pembahasan: </span>
+                        <span id="feedback-explanation" class="text-slate-700"></span>
+                    </div>
+                    <div class="pt-1 flex justify-end">
+                        <button id="btn-next" onclick="nextQuestion()"
+                            class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 text-white font-display font-bold text-base sm:text-lg px-7 py-3 rounded-xl shadow-md transition cursor-pointer">
+                            <span id="btn-next-text">SOAL BERIKUTNYA</span>
+                            <span>➔</span>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- 3. HALAMAN HASIL AKHIR (RESULT SCREEN)                    -->
+        <!-- ========================================================= -->
+        <section id="result-screen" class="hidden bg-white/95 backdrop-blur-md rounded-3xl shadow-2xl border-4 border-amber-300 overflow-hidden animate-pop">
+            <!-- Header Hasil -->
+            <div id="result-banner" class="bg-gradient-to-r from-teal-600 via-emerald-600 to-amber-500 p-6 sm:p-8 text-center text-white relative overflow-hidden">
+                <div class="relative z-10 space-y-2">
+                    <span class="inline-block bg-white/20 backdrop-blur-sm px-4 py-1 rounded-full text-xs sm:text-sm font-bold uppercase tracking-wider">
+                        Hasil Akhir Jelajah Budaya Nusantara
+                    </span>
+                    <div id="predicate-badge" class="text-5xl sm:text-6xl py-2 drop-shadow-md">🏆</div>
+                    <h2 id="predicate-title" class="font-display text-3xl sm:text-4xl font-bold drop-shadow">
+                        Sangat Hebat!
+                    </h2>
+                    <p id="predicate-desc" class="text-white/95 text-sm sm:text-base max-w-xl mx-auto font-medium">
+                        Luar biasa! Pemahamanmu tentang tradisi, kearifan lokal, dan budaya Indonesia sangat mendalam.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Statistik Nilai & Persentase -->
+            <div class="p-6 sm:p-8 space-y-6">
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+                    <div class="bg-amber-50 border-2 border-amber-200 rounded-2xl p-4 text-center">
+                        <div class="text-xs font-bold text-amber-700 uppercase">Total Skor</div>
+                        <div id="final-score" class="font-display font-bold text-3xl sm:text-4xl text-amber-600 mt-1">100</div>
+                        <div class="text-xs text-slate-500 mt-0.5">dari 100 Poin</div>
+                    </div>
+                    <div class="bg-indigo-50 border-2 border-indigo-200 rounded-2xl p-4 text-center">
+                        <div class="text-xs font-bold text-indigo-700 uppercase">Persentase</div>
+                        <div id="final-percent" class="font-display font-bold text-3xl sm:text-4xl text-indigo-600 mt-1">100%</div>
+                        <div class="text-xs text-slate-500 mt-0.5">Ketuntasan</div>
+                    </div>
+                    <div class="bg-emerald-50 border-2 border-emerald-200 rounded-2xl p-4 text-center">
+                        <div class="text-xs font-bold text-emerald-700 uppercase">Jawaban Benar</div>
+                        <div id="final-correct" class="font-display font-bold text-3xl sm:text-4xl text-emerald-600 mt-1">20</div>
+                        <div class="text-xs text-slate-500 mt-0.5">Soal Tepat</div>
+                    </div>
+                    <div class="bg-rose-50 border-2 border-rose-200 rounded-2xl p-4 text-center">
+                        <div class="text-xs font-bold text-rose-700 uppercase">Kurang Tepat</div>
+                        <div id="final-wrong" class="font-display font-bold text-3xl sm:text-4xl text-rose-600 mt-1">0</div>
+                        <div class="text-xs text-slate-500 mt-0.5">Soal Salah/Habis</div>
+                    </div>
+                </div>
+
+                <!-- Rekap Per Nomor Soal -->
+                <div class="bg-slate-50 border-2 border-slate-200 rounded-2xl p-4 sm:p-5 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <h3 class="font-display font-bold text-slate-800 text-base sm:text-lg">📊 Rekap Perjalanan 20 Soal</h3>
+                        <div class="flex items-center gap-3 text-xs font-semibold">
+                            <span class="flex items-center gap-1 text-emerald-700"><span class="w-3 h-3 rounded-sm bg-emerald-500 inline-block"></span> Benar</span>
+                            <span class="flex items-center gap-1 text-rose-700"><span class="w-3 h-3 rounded-sm bg-rose-500 inline-block"></span> Salah</span>
+                        </div>
+                    </div>
+                    <div id="recap-grid" class="grid grid-cols-5 sm:grid-cols-10 gap-2">
+                        <!-- Diisi otomatis oleh JS -->
+                    </div>
+                </div>
+
+                <!-- Tombol MAIN LAGI -->
+                <div class="text-center pt-2">
+                    <button onclick="restartQuiz()"
+                        class="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-white font-display font-bold text-xl px-10 py-4 rounded-2xl shadow-xl shadow-orange-500/25 transform hover:-translate-y-1 transition-all cursor-pointer">
+                        <span>🔄</span>
+                        <span>MAIN LAGI</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer Kecil -->
+    <footer class="mt-6 text-center text-xs text-slate-500 font-medium">
+        Media Pembelajaran Interaktif Pendidikan Pancasila Kelas IX SMP • Bhinneka Tunggal Ika 🇮🇩
+    </footer>
+
+    <!-- ========================================================= -->
+    <!-- LOGIKA JAVASCRIPT & BANK 20 SOAL NUSANTARA                -->
+    <!-- ========================================================= -->
+    <script>
+        // ==========================================
+        // 1. KOLEKSI ILUSTRASI SVG KONTEKSTUAL
+        // ==========================================
+        const svgIllustrations = {
+            subak: `
+                <svg viewBox="0 0 180 130" class="w-full h-auto" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="180" height="130" rx="14" fill="#ecfdf5"/>
+                    <!-- Langit & Matahari -->
+                    <circle cx="145" cy="28" r="14" fill="#fbbf24"/>
+                    <!-- Terasering Sawah Bali -->
+                    <path d="M10 65 Q90 48 170 65 L170 85 L10 85 Z" fill="#34d399"/>
+                    <path d="M10 82 Q90 65 170 82 L170 105 L10 105 Z" fill="#10b981"/>
+                    <path d="M10 100 Q90 84 170 100 L170 125 L10 125 Z" fill="#059669"/>
+                    <!-- Saluran Air Irigasi Subak -->
+                    <path d="M88 55 C85 75, 95 95, 86 125" stroke="#38bdf8" stroke-width="6" fill="none" stroke-linecap="round"/>
+                    <!-- Pura Kecil / Bedugul -->
+                    <rect x="26" y="42" width="22" height="20" fill="#78350f"/>
+                    <polygon points="22,42 37,26 52,42" fill="#dc2626"/>
+                    <polygon points="25,32 37,18 49,32" fill="#b91c1c"/>
+                </svg>
+            `,
+            lompatBatu: `
+                <svg viewBox="0 0 180 130" class="w-full h-auto" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="180" height="130" rx="14" fill="#fef3c7"/>
+                    <!-- Susunan Batu Nias (Hombo Batu) -->
+                    <polygon points="68,118 112,118 104,45 76,45" fill="#78716c"/>
+                    <line x1="74" y1="63" x2="106" y2="63" stroke="#57534e" stroke-width="2"/>
+                    <line x1="72" y1="81" x2="108" y2="81" stroke="#57534e" stroke-width="2"/>
+                    <line x1="70" y1="99" x2="110" y2="99" stroke="#57534e" stroke-width="2"/>
+                    <!-- Pemuda Melompat -->
+                    <circle cx="90" cy="20" r="7" fill="#92400e"/>
+                    <path d="M82 28 L98 28 L102 38 L78 38 Z" fill="#dc2626"/>
+                    <path d="M78 36 L66 43 M102 36 L114 30" stroke="#92400e" stroke-width="3.5" stroke-linecap="round"/>
+                    <!-- Garis Gerak Lompatan -->
+                    <path d="M40 95 Q90 5 140 95" fill="none" stroke="#f59e0b" stroke-width="2" stroke-dasharray="5 4"/>
+                </svg>
+            `,
+            sasiMaluku: `
+                <svg viewBox="0 0 180 130" class="w-full h-auto" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="180" height="130" rx="14" fill="#e0f2fe"/>
+                    <!-- Laut & Terumbu Karang -->
+                    <path d="M0 65 Q45 55 90 65 T180 65 L180 130 L0 130 Z" fill="#0284c7"/>
+                    <path d="M0 82 Q45 72 90 82 T180 82 L180 130 L0 130 Z" fill="#0369a1"/>
+                    <!-- Ikan & Biota Laut -->
+                    <ellipse cx="55" cy="102" rx="12" ry="6" fill="#fbbf24"/>
+                    <polygon points="43,102 36,96 36,108" fill="#f59e0b"/>
+                    <ellipse cx="125" cy="94" rx="10" ry="5" fill="#34d399"/>
+                    <polygon points="135,94 141,89 141,99" fill="#10b981"/>
+                    <!-- Tanda Sasi (Janur / Kayu Larangan Adat) -->
+                    <rect x="87" y="22" width="6" height="65" fill="#78350f"/>
+                    <path d="M90 28 L68 42 M90 28 L112 42" stroke="#65a30d" stroke-width="4" stroke-linecap="round"/>
+                    <circle cx="90" cy="24" r="7" fill="#dc2626"/>
+                </svg>
+            `,
+            leuitBaduy: `
+                <svg viewBox="0 0 180 130" class="w-full h-auto" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="180" height="130" rx="14" fill="#fefce8"/>
+                    <!-- Leuit (Lumbung Padi Adat) -->
+                    <polygon points="50,55 90,22 130,55" fill="#78350f"/>
+                    <path d="M56,55 L124,55 L118,95 L62,95 Z" fill="#d97706"/>
+                    <!-- Tiang & Gelebeg (Piringan Anti Tikus) -->
+                    <rect x="68" y="95" width="6" height="22" fill="#451a03"/>
+                    <rect x="106" y="95" width="6" height="22" fill="#451a03"/>
+                    <ellipse cx="71" cy="102" rx="11" ry="3" fill="#92400e"/>
+                    <ellipse cx="109" cy="102" rx="11" ry="3" fill="#92400e"/>
+                    <!-- Bulir Padi -->
+                    <circle cx="90" cy="74" r="10" fill="#fef08a"/>
+                    <path d="M90 66 L90 82 M85 71 L90 74 L95 71" stroke="#b45309" stroke-width="2"/>
+                </svg>
+            `,
+            batikGlobal: `
+                <svg viewBox="0 0 180 130" class="w-full h-auto" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="180" height="130" rx="14" fill="#fff1f2"/>
+                    <!-- Bola Dunia -->
+                    <circle cx="90" cy="65" r="46" fill="#38bdf8" stroke="#0284c7" stroke-width="2"/>
+                    <path d="M62 45 Q80 35 95 50 T118 75 Q95 95 70 85 Z" fill="#34d399"/>
+                    <!-- Pita Selendang Batik Melingkar -->
+                    <path d="M32 78 Q90 105 148 52" fill="none" stroke="#e11d48" stroke-width="12" stroke-linecap="round"/>
+                    <path d="M32 78 Q90 105 148 52" fill="none" stroke="#fde047" stroke-width="3" stroke-dasharray="6 6"/>
+                </svg>
+            `
+        };
+
+        // ==========================================
+        // 2. BANK 20 SOAL PENDIDIKAN PANCASILA IX
+        // ==========================================
+        const quizData = [
+            // MATERI 1: Pengertian tradisi, budaya, dan kearifan lokal (2 Soal)
+            {
+                id: 1,
+                topic: "Materi 1: Pengertian Tradisi, Budaya, dan Kearifan Lokal",
+                difficulty: "Mudah",
+                caseText: "Di desa tempat tinggal Bagas, setiap menjelang bulan Ramadan masyarakat selalu mengadakan kegiatan 'Munggahan' atau makan bersama keluarga dan tetangga sebagai wujud syukur serta saling memaafkan. Kebiasaan ini sudah berlangsung ratusan tahun dari zaman kakek buyut mereka.",
+                question: "Berdasarkan ilustrasi cerita di atas, kebiasaan turun-temurun yang diwariskan dari generasi ke generasi dan masih dijalankan oleh masyarakat disebut...",
+                options: [
+                    "Modernisasi sosial",
+                    "Tradisi",
+                    "Asimilasi budaya",
+                    "Globalisasi lokal"
+                ],
+                correct: 1,
+                explanation: "Tradisi adalah adat kebiasaan turun-temurun dari nenek moyang yang masih dijalankan dan dijaga kelestariannya oleh masyarakat hingga saat ini."
+            },
+            {
+                id: 2,
+                topic: "Materi 1: Pengertian Tradisi, Budaya, dan Kearifan Lokal",
+                difficulty: "Mudah",
+                caseText: "Masyarakat adat di lereng gunung memiliki pandangan hidup dan pengetahuan khusus dalam mengelola hutan agar tidak terjadi tanah longsor, seperti larangan menebang pohon di sekitar mata air.",
+                question: "Gagasan, nilai, dan pandangan setempat yang bersifat bijaksana, penuh kearifan, bernilai baik, serta tertanam dan diikuti oleh anggota masyarakatnya dinamakan...",
+                options: [
+                    "Kearifan lokal",
+                    "Akulturasi budaya",
+                    "Teknologi tepat guna",
+                    "Hukum pidana nasional"
+                ],
+                correct: 0,
+                explanation: "Kearifan lokal (local wisdom) merupakan pandangan hidup, ilmu pengetahuan, serta strategi kehidupan berwujud aktivitas yang dilakukan masyarakat lokal dalam menjawab berbagai masalah untuk memenuhi kebutuhan mereka."
+            },
+
+            // MATERI 2: Karakteristik tradisi, budaya, dan kearifan lokal (2 Soal)
+            {
+                id: 3,
+                topic: "Materi 2: Karakteristik Tradisi, Budaya, dan Kearifan Lokal",
+                difficulty: "Sedang",
+                caseText: "Saat mengikuti pertukaran pelajar antardaerah, Naila melihat bahwa kesenian wayang kulit yang dahulu hanya dipentaskan semalam suntuk di pendopo, kini juga dikemas dalam durasi ringkas dengan sulih bahasa Indonesia agar mudah dipahami generasi muda tanpa menghilangkan nilai moral ceritanya.",
+                question: "Peristiwa yang diamati Naila menunjukkan salah satu karakteristik utama kebudayaan, yaitu...",
+                options: [
+                    "Bersifat statis dan mutlak tidak dapat menyesuaikan zaman",
+                    "Dinamis, adaptif, dan diwariskan melalui proses belajar",
+                    "Hanya dimiliki oleh kelompok bangsawan tertentu",
+                    "Muncul secara otomatis secara biologis sejak lahir"
+                ],
+                correct: 1,
+                explanation: "Budaya memiliki karakteristik dinamis dan adaptif, artinya mampu menyesuaikan diri dengan perkembangan zaman tanpa kehilangan nilai dasarnya, serta diwariskan melalui proses belajar sosial."
+            },
+            {
+                id: 4,
+                topic: "Materi 2: Karakteristik Tradisi, Budaya, dan Kearifan Lokal",
+                difficulty: "Sedang",
+                caseText: "Kearifan lokal masyarakat pesisir dalam membaca arah angin dan musim tangkap ikan terbukti mampu bertahan meski banyak teknologi navigasi modern bermunculan.",
+                question: "Berikut ini yang merupakan ciri khas kearifan lokal yang membuatnya tetap bertahan di tengah masyarakat adalah...",
+                options: [
+                    "Selalu bergantung pada modal asing dan teknologi tinggi",
+                    "Mampu bertahan terhadap budaya luar dan menyatukan unsur budaya luar ke dalam budaya asli",
+                    "Menolak segala bentuk interaksi dengan masyarakat dari daerah lain",
+                    "Bersifat seragam di seluruh wilayah negara tanpa perbedaan"
+                ],
+                correct: 1,
+                explanation: "Salah satu karakteristik kearifan lokal adalah ketahanannya terhadap budaya luar, memiliki kemampuan mengakomodasi dan mengintegrasikan unsur budaya luar ke dalam budaya asli, serta memberi arah pada perkembangan budaya."
+            },
+
+            // MATERI 3: Persamaan dan perbedaan tradisi, budaya, dan kearifan lokal (2 Soal)
+            {
+                id: 5,
+                topic: "Materi 3: Persamaan dan Perbedaan Tradisi, Budaya, dan Kearifan Lokal",
+                difficulty: "HOTS",
+                caseText: "Dalam diskusi kelompok kelas IX, Rani membandingkan tiga konsep: (1) Budaya mencakup seluruh hasil cipta, rasa, dan karsa manusia; (2) Tradisi berfokus pada kebiasaan yang diwariskan lintas generasi; (3) Kearifan lokal menekankan nilai kebijaksanaan setempat dalam menyikapi lingkungan dan kehidupan.",
+                question: "Berdasarkan analisis Rani, persamaan mendasar dari tradisi, budaya, dan kearifan lokal adalah ketiganya sama-sama...",
+                options: [
+                    "Berwujud benda fisik bersejarah yang disimpan di museum",
+                    "Merupakan produk sosial masyarakat yang membentuk identitas dan pedoman perilaku bersama",
+                    "Diciptakan melalui peraturan tertulis pemerintah pusat",
+                    "Berlaku hanya pada masyarakat pedesaan yang terisolasi"
+                ],
+                correct: 1,
+                explanation: "Tradisi, budaya, dan kearifan lokal sama-sama merupakan hasil konstruksi/ciptaan sosial masyarakat yang diwariskan, membentuk jati diri kelompok, serta menjadi pedoman berperilaku."
+            },
+            {
+                id: 6,
+                topic: "Materi 3: Persamaan dan Perbedaan Tradisi, Budaya, dan Kearifan Lokal",
+                difficulty: "HOTS",
+                caseText: "Tidak semua kebiasaan lama di masyarakat otomatis disebut kearifan lokal jika kebiasaan tersebut justru merusak kelestarian alam atau merugikan hak asasi manusia.",
+                question: "Perbedaan utama antara tradisi dengan kearifan lokal terletak pada aspek...",
+                options: [
+                    "Tradisi selalu berbentuk tarian, sedangkan kearifan lokal selalu berbentuk bangunan",
+                    "Tradisi menekankan pewarisan kebiasaan turun-temurun, sedangkan kearifan lokal menekankan nilai kebijaksanaan dan solusi harmonis bagi kehidupan",
+                    "Tradisi berasal dari luar negeri, sedangkan kearifan lokal berasal dari dalam negeri",
+                    "Tradisi dimiliki oleh individu, sedangkan kearifan lokal dimiliki oleh negara"
+                ],
+                correct: 1,
+                explanation: "Tradisi merujuk pada praktik atau kebiasaan yang diwariskan lintas generasi, sedangkan kearifan lokal menitikberatkan pada nilai kebijaksanaan (wisdom) lokal yang bernilai baik dan solutif bagi masyarakat serta lingkungannya."
+            },
+
+            // MATERI 4: Contoh tradisi dan budaya dari berbagai daerah di Indonesia (2 Soal)
+            {
+                id: 7,
+                topic: "Materi 4: Contoh Tradisi dan Budaya Daerah di Indonesia",
+                difficulty: "Mudah",
+                illustration: "lompatBatu",
+                illustrationCaption: "Ilustrasi tradisi melompati susunan batu setinggi ±2 meter oleh pemuda Nias.",
+                caseText: "Perhatikan ilustrasi di atas! Dalam tradisi masyarakat Desa Bawömataluo, Pulau Nias, Sumatera Utara, seorang pemuda harus mampu melompati susunan batu setinggi sekitar 2 meter sebagai simbol kedewasaan, ketangkasan, dan kesiapan membela desa.",
+                question: "Nama tradisi adat dari Nias yang digambarkan pada ilustrasi tersebut adalah...",
+                options: [
+                    "Karapan Sapi",
+                    "Fahombo (Hombo Batu)",
+                    "Rambu Solo'",
+                    "Tabuik"
+                ],
+                correct: 1,
+                explanation: "Fahombo atau Hombo Batu (Lompat Batu) adalah tradisi terkenal dari Pulau Nias, Sumatera Utara, sebagai ujian kedewasaan dan ketangkasan fisik pemuda Nias."
+            },
+            {
+                id: 8,
+                topic: "Materi 4: Contoh Tradisi dan Budaya Daerah di Indonesia",
+                difficulty: "Sedang",
+                caseText: "Putu mengajak teman-temannya dari luar Bali menyaksikan upacara pembakaran jenazah umat Hindu di Bali yang berlangsung meriah dengan diiringi gamelan baleganjur sebagai simbol penyucian roh menuju alam selanjutnya.",
+                question: "Upacara adat dari Provinsi Bali yang diceritakan pada ilustrasi tersebut bernama...",
+                options: [
+                    "Ngaben",
+                    "Sekaten",
+                    "Tiwah",
+                    "Kasada"
+                ],
+                correct: 0,
+                explanation: "Ngaben adalah upacara pembakaran jenazah umat Hindu di Bali yang bertujuan menyucikan roh leluhur sebelum menuju tempat peristirahatan terakhir."
+            },
+
+            // MATERI 5: Contoh kearifan lokal masyarakat Indonesia (2 Soal)
+            {
+                id: 9,
+                topic: "Materi 5: Contoh Kearifan Lokal Masyarakat Indonesia",
+                difficulty: "Mudah",
+                illustration: "subak",
+                illustrationCaption: "Ilustrasi sistem irigasi persawahan terasering yang dikelola bersama di Bali.",
+                caseText: "Perhatikan ilustrasi sistem pengairan persawahan di Bali berikut! Sistem ini mengatur pembagian air secara adil dan merata kepada seluruh petani berdasarkan filosofi Tri Hita Karana (harmoni antara manusia, alam, dan Tuhan) sehingga diakui UNESCO sebagai Warisan Budaya Dunia.",
+                question: "Sistem organisasi kemasyarakatan sekaligus kearifan lokal pengairan sawah di Bali tersebut dikenal dengan nama...",
+                options: [
+                    "Sasi",
+                    "Subak",
+                    "Terasering",
+                    "Awig-awig"
+                ],
+                correct: 1,
+                explanation: "Subak adalah organisasi kemasyarakatan yang khusus mengatur sistem pengairan sawah secara tradisional dan adil di Bali berdasarkan nilai Tri Hita Karana."
+            },
+            {
+                id: 10,
+                topic: "Materi 5: Contoh Kearifan Lokal Masyarakat Indonesia",
+                difficulty: "Sedang",
+                illustration: "leuit",
+                illustrationCaption: "Ilustrasi Leuit, lumbung penyimpanan padi tradisional masyarakat Kanekes (Baduy).",
+                caseText: "Masyarakat adat Baduy (Kanekes) di Banten memiliki bangunan lumbung padi bernama 'Leuit' yang dilengkapi piringan kayu anti-tikus. Padi hasil panen disimpan di Leuit dan tidak boleh diperjualbelikan, melainkan digunakan untuk cadangan pangan bersama saat paceklik.",
+                question: "Kearifan lokal 'Leuit' pada masyarakat Baduy tersebut membuktikan bahwa nenek moyang kita telah menerapkan konsep...",
+                options: [
+                    "Eksploitasi hasil pertanian untuk ekspor besar-besaran",
+                    "Ketahanan pangan berkelanjutan dan kemandirian ekonomi komunitas",
+                    "Sistem perdagangan bebas berbasis pasar modern",
+                    "Privatisasi sumber daya alam untuk kelompok tertentu"
+                ],
+                correct: 1,
+                explanation: "Leuit adalah wujud nyata kearifan lokal dalam menjaga ketahanan pangan (food security) sehingga masyarakat tidak pernah mengalami kelaparan meski terjadi gagal panen."
+            },
+
+            // MATERI 6: Fungsi dan manfaat tradisi, budaya, serta kearifan lokal (2 Soal)
+            {
+                id: 11,
+                topic: "Materi 6: Fungsi dan Manfaat Tradisi, Budaya, dan Kearifan Lokal",
+                difficulty: "Sedang",
+                illustration: "sasiMaluku",
+                illustrationCaption: "Ilustrasi tradisi Sasi Laut di Maluku dan Papua untuk menjaga populasi ikan.",
+                caseText: "Di beberapa wilayah Maluku dan Papua, berlaku hukum adat 'Sasi' yang melarang warga menangkap ikan atau memanen hasil alam tertentu dalam jangka waktu yang disepakati bersama hingga ukuran biota laut kembali besar dan siap panen.",
+                question: "Fungsi utama kearifan lokal 'Sasi' berdasarkan kasus di atas adalah...",
+                options: [
+                    "Menghambat kemajuan ekonomi nelayan lokal",
+                    "Konservasi dan pelestarian sumber daya alam serta kontrol sosial masyarakat",
+                    "Menarik pajak pelabuhan dari kapal-kapal asing",
+                    "Menggantikan seluruh peraturan pemerintah daerah"
+                ],
+                correct: 1,
+                explanation: "Tradisi Sasi berfungsi sebagai instrumen konservasi alam yang mencegah eksploitasi berlebihan (overfishing) sekaligus menjadi aturan kontrol sosial yang dipatuhi warga."
+            },
+            {
+                id: 12,
+                topic: "Materi 6: Fungsi dan Manfaat Tradisi, Budaya, dan Kearifan Lokal",
+                difficulty: "Sedang",
+                caseText: "Setiap akhir pekan, warga Kampung Pelangi melakukan tradisi 'Sambatan' atau gotong royong memperbaiki rumah warga yang rusak secara sukarela tanpa dibayar. Warga dari berbagai latar belakang suku dan agama ikut membantu dengan penuh keakraban.",
+                question: "Manfaat sosial dari tradisi 'Sambatan' dalam kehidupan bermasyarakat adalah...",
+                options: [
+                    "Menumbuhkan sikap individualisme dan persaingan antarwarga",
+                    "Mempererat solidaritas sosial, empati, dan persatuan dalam keberagaman",
+                    "Mengurangi tanggung jawab pemilik rumah terhadap tempat tinggalnya",
+                    "Membatasi interaksi warga hanya dengan tetangga terdekat saja"
+                ],
+                correct: 1,
+                explanation: "Tradisi gotong royong seperti Sambatan berfungsi memperkuat ikatan sosial, solidaritas, dan harmoni antarwarga tanpa memandang perbedaan latar belakang."
+            },
+
+            // MATERI 7: Peran tradisi, budaya, dan kearifan lokal dalam masyarakat global (2 Soal)
+            {
+                id: 13,
+                topic: "Materi 7: Peran Budaya dan Kearifan Lokal dalam Masyarakat Global",
+                difficulty: "Sedang",
+                illustration: "batikGlobal",
+                illustrationCaption: "Batik Indonesia telah diakui UNESCO sebagai Warisan Budaya Takbenda Dunia.",
+                caseText: "Pada tanggal 2 Oktober 2009, UNESCO menetapkan Batik Indonesia sebagai Warisan Kemanusiaan untuk Budaya Lisan dan Nonbendawi. Kini, batik sering dikenakan oleh para pemimpin dunia dalam konferensi internasional di Indonesia.",
+                question: "Peran penting budaya batik dalam pergaulan masyarakat global sesuai ilustrasi tersebut adalah sebagai...",
+                options: [
+                    "Alat untuk mendominasi negara-negara berkembang lainnya",
+                    "Identitas jati diri bangsa dan sarana diplomasi budaya (soft power) Indonesia di dunia",
+                    "Penghapus seluruh budaya pakaian modern di tingkat internasional",
+                    "Syarat mutlak bagi wisatawan asing untuk masuk ke Indonesia"
+                ],
+                correct: 1,
+                explanation: "Budaya seperti batik berperan sebagai identitas nasional yang membedakan Indonesia dengan bangsa lain sekaligus menjadi instrumen diplomasi budaya yang memperkuat citra positif Indonesia di mata dunia."
+            },
+            {
+                id: 14,
+                topic: "Materi 7: Peran Budaya dan Kearifan Lokal dalam Masyarakat Global",
+                difficulty: "HOTS",
+                caseText: "Dunia saat ini menghadapi krisis perubahan iklim dan kerusakan lingkungan akibat pola konsumsi berlebihan. Filosofi 'Memayu Hayuning Bawana' dari Jawa yang mengajarkan manusia untuk memperindah dan menjaga kelestarian alam semesta semakin banyak dikaji oleh akademisi internasional.",
+                question: "Kesimpulan yang tepat mengenai peran kearifan lokal Nusantara bagi masyarakat global adalah...",
+                options: [
+                    "Kearifan lokal hanya relevan untuk menyelesaikan masalah desa terpencil",
+                    "Nilai kearifan lokal Nusantara mampu memberikan kontribusi solusi etis bagi permasalahan global seperti krisis ekologi",
+                    "Masyarakat global wajib meninggalkan ilmu pengetahuan modern dan kembali ke zaman dahulu",
+                    "Kearifan lokal Indonesia tidak memiliki kesamaan nilai dengan kemanusiaan universal"
+                ],
+                correct: 1,
+                explanation: "Kearifan lokal Nusantara menyimpan nilai-nilai luhur universal (seperti harmoni alam dan gotong royong) yang relevan menjadi inspirasi solusi atas tantangan global modern."
+            },
+
+            // MATERI 8: Tantangan pelestarian budaya di era globalisasi (2 Soal)
+            {
+                id: 15,
+                topic: "Materi 8: Tantangan Pelestarian Budaya di Era Globalisasi",
+                difficulty: "Sedang",
+                caseText: "Dimas memperhatikan bahwa sebagian remaja di lingkungannya lebih hafal lirik lagu dan tarian pop mancanegara daripada lagu daerahnya sendiri. Bahkan, ada yang merasa malu menggunakan bahasa daerah karena dianggap 'kurang gaul'.",
+                question: "Fenomena sikap remaja pada cerita Dimas merupakan tantangan pelestarian budaya di era globalisasi yang dikenal sebagai...",
+                options: [
+                    "Revitalisasi budaya lokal",
+                    "Memudarnya rasa bangga terhadap budaya sendiri akibat arus westernisasi/budaya asing",
+                    "Akulturasi budaya yang seimbang",
+                    "Nasionalisme budaya yang berlebihan"
+                ],
+                correct: 1,
+                explanation: "Derasynya arus informasi global sering memicu westernisasi dan pergeseran gaya hidup sehingga sebagian generasi muda menganggap budaya asing lebih modern daripada budaya lokal."
+            },
+            {
+                id: 16,
+                topic: "Materi 8: Tantangan Pelestarian Budaya di Era Globalisasi",
+                difficulty: "HOTS",
+                caseText: "Sebuah perusahaan luar negeri mematenkan motif tenun tradisional dari salah satu daerah di Indonesia secara sepihak untuk produk fesyen komersial tanpa mencantumkan asal daerah maupun memberikan manfaat bagi perajin aslinya.",
+                question: "Kasus tersebut menunjukkan tantangan serius pelestarian budaya di era globalisasi, yaitu...",
+                options: [
+                    "Klaim sepihak dan komersialisasi budaya tanpa perlindungan hak kekayaan intelektual komunal",
+                    "Kurangnya minat turis asing terhadap produk kerajinan tangan Nusantara",
+                    "Terlalu banyaknya perajin tenun muda di daerah pedesaan",
+                    "Sulitnya mengekspor kain tradisional ke pasar internasional"
+                ],
+                correct: 0,
+                explanation: "Klaim budaya oleh pihak luar serta komersialisasi tanpa izin merupakan tantangan nyata yang menuntut pencatatan dan perlindungan Hak Kekayaan Intelektual (HKI) komunal."
+            },
+
+            // MATERI 9: Upaya menjaga dan melestarikan tradisi, budaya, dan kearifan lokal (2 Soal)
+            {
+                id: 17,
+                topic: "Materi 9: Upaya Menjaga dan Melestarikan Budaya dan Kearifan Lokal",
+                difficulty: "Sedang",
+                caseText: "SMP Nusantara mewajibkan seluruh siswa mengikuti ekstrakurikuler seni tari tradisional, karawitan, atau membatik setiap hari Jumat. Para siswa tidak hanya membaca sejarahnya, tetapi langsung mempraktikkan cara menari dan membatik.",
+                question: "Strategi pelestarian budaya yang diterapkan oleh SMP Nusantara tersebut termasuk dalam bentuk...",
+                options: [
+                    "Cultural Experience (pelestarian dengan terjun langsung mempraktikkan budaya)",
+                    "Cultural Shock (gegar budaya akibat perubahan lingkungan)",
+                    "Isolasi budaya dari pengaruh luar",
+                    "Komersialisasi seni sekolah"
+                ],
+                correct: 0,
+                explanation: "Pelestarian budaya dapat dilakukan melalui Cultural Experience (terjun langsung mempraktikkan pengalaman budaya) dan Cultural Knowledge (membuat pusat informasi/edukasi budaya)."
+            },
+            {
+                id: 18,
+                topic: "Materi 9: Upaya Menjaga dan Melestarikan Budaya dan Kearifan Lokal",
+                difficulty: "HOTS",
+                caseText: "Untuk mencegah punahnya cerita rakyat dan bahasa daerah yang penutur aslinya semakin menua, komunitas pemuda di Kalimantan membuat kamus digital interaktif dan animasi pendek cerita rakyat di platform video daring.",
+                question: "Mengapa langkah digitalisasi budaya seperti yang dilakukan komunitas pemuda tersebut sangat efektif di masa kini?",
+                options: [
+                    "Karena menghapus kebutuhan untuk mempelajari budaya secara langsung di daerah asal",
+                    "Karena mendokumentasikan arsip budaya secara permanen sekaligus menjangkau generasi digital secara menarik",
+                    "Karena membuat budaya daerah hanya bisa diakses oleh masyarakat perkotaan",
+                    "Karena menggantikan peran tokoh adat di lingkungan masyarakat"
+                ],
+                correct: 1,
+                explanation: "Digitalisasi budaya menyelamatkan warisan takbenda dari kepunahan sekaligus menjembatani transfer pengetahuan budaya kepada generasi muda melalui media yang akrab dengan mereka."
+            },
+
+            // MATERI 10: Sikap generasi muda dalam melestarikan budaya Indonesia (2 Soal)
+            {
+                id: 19,
+                topic: "Materi 10: Sikap Generasi Muda dalam Melestarikan Budaya Indonesia",
+                difficulty: "Mudah",
+                caseText: "Saat menghadiri acara perpisahan sekolah, panitia OSIS kelas IX sepakat menetapkan tema 'Ragam Pesona Nusantara' di mana seluruh siswa mengenakan busana adat atau kain tenun/batik dari berbagai daerah di Indonesia.",
+                question: "Sikap yang ditunjukkan oleh panitia OSIS kelas IX tersebut mencerminkan perilaku...",
+                options: [
+                    "Etnosentrisme yang menganggap daerahnya paling unggul",
+                    "Rasa bangga, cinta tanah air, dan penghargaan terhadap keberagaman budaya Nusantara",
+                    "Penolakan terhadap seluruh perkembangan mode masa kini",
+                    "Sikap acuh tak acuh terhadap identitas kebangsaan"
+                ],
+                correct: 1,
+                explanation: "Mengenakan busana daerah dan kain tradisional dalam berbagai kesempatan merupakan wujud nyata rasa bangga dan cinta terhadap budaya Indonesia."
+            },
+            {
+                id: 20,
+                topic: "Materi 10: Sikap Generasi Muda dalam Melestarikan Budaya Indonesia",
+                difficulty: "HOTS",
+                caseText: "Sebagai kreator konten remaja, Rani gemar membuat video pendek yang memadukan musik tradisional Sasando dari NTT dengan aransemen musik akustik modern, serta menyertakan penjelasan makna filosofis alat musik tersebut dalam takarir (caption) berbahasa Indonesia dan Inggris.",
+                question: "Sikap Rani dalam menyikapi perkembangan globalisasi dan budaya Nusantara patut diteladani karena...",
+                options: [
+                    "Ia mengganti seluruh pakem alat musik Sasando dengan musik barat",
+                    "Ia bersikap kreatif, selektif memadukan unsur modern, dan aktif mempromosikan budaya Indonesia ke dunia",
+                    "Ia hanya mengejar popularitas tanpa peduli pada nilai sejarah budaya",
+                    "Ia menutup diri dari perkembangan teknologi media sosial"
+                ],
+                correct: 1,
+                explanation: "Generasi muda Pancasila dituntut kreatif memanfaatkan teknologi dan bersikap selektif—menerima inovasi modern untuk memperkaya dan mempromosikan budaya Nusantara tanpa menghilangkan jati dirinya."
+            }
+        ];
+
+        // ==========================================
+        // 3. STATE APLIKASI & AUDIO SYNTHESIZER
+        // ==========================================
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let timerInterval = null;
+        let timeLeft = 20;
+        let isAnswered = false;
+        let soundEnabled = true;
+        let userHistory = []; // Menyimpan riwayat { questionId, isCorrect }
+
+        // Web Audio API untuk Efek Suara Tanpa File Eksternal
+        let audioCtx = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (AudioContext) {
+                    audioCtx = new AudioContext();
+                }
+            }
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function playSound(type) {
+            if (!soundEnabled) return;
+            try {
+                initAudio();
+                if (!audioCtx) return;
+
+                const now = audioCtx.currentTime;
+
+                if (type === 'correct') {
+                    // Nada ceria naik (C5 - E5 - G5)
+                    const notes = [523.25, 659.25, 783.99];
+                    notes.forEach((freq, idx) => {
+                        const osc = audioCtx.createOscillator();
+                        const gain = audioCtx.createGain();
+                        osc.type = 'triangle';
+                        osc.frequency.setValueAtTime(freq, now + idx * 0.08);
+                        gain.gain.setValueAtTime(0.18, now + idx * 0.08);
+                        gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.35);
+                        osc.connect(gain);
+                        gain.connect(audioCtx.destination);
+                        osc.start(now + idx * 0.08);
+                        osc.stop(now + idx * 0.08 + 0.36);
+                    });
+                } else if (type === 'wrong') {
+                    // Nada lembut turun (E4 - C4)
+                    const notes = [329.63, 261.63];
+                    notes.forEach((freq, idx) => {
+                        const osc = audioCtx.createOscillator();
+                        const gain = audioCtx.createGain();
+                        osc.type = 'sine';
+                        osc.frequency.setValueAtTime(freq, now + idx * 0.14);
+                        gain.gain.setValueAtTime(0.18, now + idx * 0.14);
+                        gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.14 + 0.35);
+                        osc.connect(gain);
+                        gain.connect(audioCtx.destination);
+                        osc.start(now + idx * 0.14);
+                        osc.stop(now + idx * 0.14 + 0.36);
+                    });
+                } else if (type === 'tick') {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(880, now);
+                    gain.gain.setValueAtTime(0.05, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.07);
+                } else if (type === 'finish') {
+                    // Fanfare Kemenangan
+                    const notes = [523.25, 659.25, 783.99, 1046.50];
+                    notes.forEach((freq, idx) => {
+                        const osc = audioCtx.createOscillator();
+                        const gain = audioCtx.createGain();
+                        osc.type = 'triangle';
+                        osc.frequency.setValueAtTime(freq, now + idx * 0.12);
+                        gain.gain.setValueAtTime(0.2, now + idx * 0.12);
+                        gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.12 + 0.55);
+                        osc.connect(gain);
+                        gain.connect(audioCtx.destination);
+                        osc.start(now + idx * 0.12);
+                        osc.stop(now + idx * 0.12 + 0.56);
+                    });
+                }
+            } catch (e) {
+                // Abaikan jika browser memblokir audio otomatis
+            }
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            const icon = document.getElementById('sound-icon');
+            const label = document.getElementById('sound-label');
+            if (soundEnabled) {
+                icon.textContent = '🔊';
+                label.textContent = 'Suara Aktif';
+                initAudio();
+            } else {
+                icon.textContent = '🔇';
+                label.textContent = 'Suara Mati';
+            }
+        }
+
+        // ==========================================
+        // 4. EFEK CONFETTI SELEBRASI
+        // ==========================================
+        function launchConfetti(count = 65) {
+            const canvas = document.getElementById('confetti-canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            const colors = ['#f59e0b', '#10b981', '#e11d48', '#3b82f6', '#8b5cf6', '#fbbf24'];
+            const particles = [];
+
+            for (let i = 0; i < count; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height * 0.35 - 40,
+                    size: Math.random() * 8 + 5,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    speedX: (Math.random() - 0.5) * 6,
+                    speedY: Math.random() * 4 + 3,
+                    rotation: Math.random() * 360,
+                    rotSpeed: (Math.random() - 0.5) * 10
+                });
+            }
+
+            let frame = 0;
+            function animateConfetti() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                particles.forEach(p => {
+                    p.x += p.speedX;
+                    p.y += p.speedY;
+                    p.rotation += p.rotSpeed;
+                    p.speedY += 0.12; // gravitasi
+
+                    ctx.save();
+                    ctx.translate(p.x, p.y);
+                    ctx.rotate((p.rotation * Math.PI) / 180);
+                    ctx.fillStyle = p.color;
+                    ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
+                    ctx.restore();
+                });
+
+                frame++;
+                if (frame < 95) {
+                    requestAnimationFrame(animateConfetti);
+                } else {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                }
+            }
+            animateConfetti();
+        }
+
+        // ==========================================
+        // 5. ALUR PERMAINAN KUIS
+        // ==========================================
+        function startQuiz() {
+            initAudio();
+            currentQuestionIndex = 0;
+            score = 0;
+            userHistory = [];
+
+            document.getElementById('live-score').textContent = '0';
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            isAnswered = false;
+            clearInterval(timerInterval);
+
+            const q = quizData[currentQuestionIndex];
+            const totalQ = quizData.length;
+
+            // Update Header & Progress
+            document.getElementById('current-q-num').textContent = currentQuestionIndex + 1;
+            const progressPercent = ((currentQuestionIndex + 1) / totalQ) * 100;
+            document.getElementById('progress-bar').style.width = `${progressPercent}%`;
+
+            // Badge Kesulitan
+            const diffBadge = document.getElementById('difficulty-badge');
+            diffBadge.textContent = q.difficulty;
+            diffBadge.className = 'text-xs font-bold px-2.5 py-1 rounded-lg border ';
+            if (q.difficulty === 'Mudah') {
+                diffBadge.className += 'bg-emerald-100 text-emerald-800 border-emerald-300';
+            } else if (q.difficulty === 'Sedang') {
+                diffBadge.className += 'bg-amber-100 text-amber-800 border-amber-300';
+            } else {
+                diffBadge.className += 'bg-rose-100 text-rose-800 border-rose-300';
+            }
+
+            // Materi
+            document.getElementById('topic-label').textContent = q.topic;
+
+            // Ilustrasi SVG (jika ada)
+            const illusContainer = document.getElementById('illustration-container');
+            if (q.illustration && svgIllustrations[q.illustration]) {
+                illusContainer.classList.remove('hidden');
+                document.getElementById('illustration-svg').innerHTML = svgIllustrations[q.illustration];
+                document.getElementById('illustration-caption').textContent = q.illustrationCaption || '';
+            } else {
+                illusContainer.classList.add('hidden');
+            }
+
+            // Teks Kasus Literasi
+            const caseBox = document.getElementById('case-box');
+            if (q.caseText) {
+                caseBox.classList.remove('hidden');
+                caseBox.textContent = q.caseText;
+            } else {
+                caseBox.classList.add('hidden');
+            }
+
+            // Pertanyaan
+            document.getElementById('question-text').textContent = q.question;
+
+            // Render 4 Pilihan Jawaban
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+            const letters = ['A', 'B', 'C', 'D'];
+
+            q.options.forEach((optText, idx) => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.id = `option-btn-${idx}`;
+                btn.onclick = () => selectAnswer(idx);
+                btn.className = 'option-btn w-full text-left flex items-center gap-3.5 p-3.5 sm:p-4 rounded-2xl border-2 border-slate-200 bg-white hover:border-amber-400 hover:bg-amber-50/60 focus:outline-none cursor-pointer';
+                btn.innerHTML = `
+                    <span id="option-letter-${idx}" class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-amber-100 text-amber-800 font-display font-bold text-base sm:text-lg flex items-center justify-center flex-shrink-0 transition-colors">
+                        ${letters[idx]}
+                    </span>
+                    <span class="text-slate-800 font-semibold text-sm sm:text-base leading-snug">${optText}</span>
+                `;
+                optionsContainer.appendChild(btn);
+            });
+
+            // Sembunyikan Kotak Feedback
+            const feedbackBox = document.getElementById('feedback-box');
+            feedbackBox.classList.add('hidden');
+
+            // Animasi kartu soal
+            const qCard = document.getElementById('question-card');
+            qCard.classList.remove('animate-pop', 'animate-shake');
+            void qCard.offsetWidth; // trigger reflow
+            qCard.classList.add('animate-pop');
+
+            // Mulai Timer 20 Detik
+            startTimer();
+        }
+
+        function startTimer() {
+            timeLeft = 20;
+            updateTimerUI();
+
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateTimerUI();
+
+                if (timeLeft <= 5 && timeLeft > 0) {
+                    playSound('tick');
+                }
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    handleTimeOut();
+                }
+            }, 1000);
+        }
+
+        function updateTimerUI() {
+            const timerText = document.getElementById('timer-text');
+            const timerBox = document.getElementById('timer-box');
+            timerText.textContent = timeLeft;
+
+            if (timeLeft > 10) {
+                timerBox.className = 'flex items-center gap-1.5 bg-amber-50 border-2 border-amber-300 px-3.5 py-1.5 rounded-xl transition-colors';
+                timerText.className = 'font-display font-bold text-amber-800 text-base sm:text-lg tabular-nums';
+            } else if (timeLeft > 5) {
+                timerBox.className = 'flex items-center gap-1.5 bg-orange-100 border-2 border-orange-400 px-3.5 py-1.5 rounded-xl transition-colors';
+                timerText.className = 'font-display font-bold text-orange-800 text-base sm:text-lg tabular-nums';
+            } else {
+                timerBox.className = 'flex items-center gap-1.5 bg-rose-100 border-2 border-rose-500 px-3.5 py-1.5 rounded-xl transition-colors timer-urgent';
+                timerText.className = 'font-display font-bold text-rose-700 text-base sm:text-lg tabular-nums';
+            }
+        }
+
+        function handleTimeOut() {
+            if (isAnswered) return;
+            isAnswered = true;
+
+            const q = quizData[currentQuestionIndex];
+            disableAllOptions();
+
+            // Sorot jawaban yang benar
+            highlightCorrectOption(q.correct);
+
+            // Rekam riwayat salah
+            userHistory.push({ questionId: q.id, isCorrect: false });
+
+            // Efek suara & getar lembut
+            playSound('wrong');
+            const qCard = document.getElementById('question-card');
+            qCard.classList.remove('animate-pop');
+            qCard.classList.add('animate-shake');
+
+            // Tampilkan Umpan Balik Waktu Habis
+            showFeedback(
+                'timeout',
+                '⏰',
+                'Waktu Habis! (0 Poin)',
+                q.explanation
+            );
+        }
+
+        function selectAnswer(selectedIndex) {
+            if (isAnswered) return;
+            isAnswered = true;
+            clearInterval(timerInterval);
+
+            const timerBox = document.getElementById('timer-box');
+            timerBox.classList.remove('timer-urgent');
+
+            const q = quizData[currentQuestionIndex];
+            const isCorrect = selectedIndex === q.correct;
+
+            disableAllOptions();
+            highlightCorrectOption(q.correct);
+
+            if (isCorrect) {
+                score += 5;
+                document.getElementById('live-score').textContent = score;
+                userHistory.push({ questionId: q.id, isCorrect: true });
+
+                playSound('correct');
+                launchConfetti(35);
+
+                showFeedback(
+                    'correct',
+                    '🎉',
+                    'Benar! +5 Poin',
+                    q.explanation
+                );
+            } else {
+                // Sorot pilihan salah yang diklik murid
+                const wrongBtn = document.getElementById(`option-btn-${selectedIndex}`);
+                const wrongLetter = document.getElementById(`option-letter-${selectedIndex}`);
+                wrongBtn.className = 'option-btn w-full text-left flex items-center gap-3.5 p-3.5 sm:p-4 rounded-2xl border-2 border-rose-500 bg-rose-50';
+                wrongLetter.className = 'w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-rose-600 text-white font-display font-bold text-base sm:text-lg flex items-center justify-center flex-shrink-0';
+
+                userHistory.push({ questionId: q.id, isCorrect: false });
+
+                playSound('wrong');
+                const qCard = document.getElementById('question-card');
+                qCard.classList.remove('animate-pop');
+                qCard.classList.add('animate-shake');
+
+                showFeedback(
+                    'wrong',
+                    '❌',
+                    'Kurang Tepat! (0 Poin)',
+                    q.explanation
+                );
+            }
+        }
+
+        function disableAllOptions() {
+            for (let i = 0; i < 4; i++) {
+                const btn = document.getElementById(`option-btn-${i}`);
+                if (btn) {
+                    btn.disabled = true;
+                    btn.classList.remove('cursor-pointer');
+                    btn.classList.add('cursor-default');
+                }
+            }
+        }
+
+        function highlightCorrectOption(correctIndex) {
+            const correctBtn = document.getElementById(`option-btn-${correctIndex}`);
+            const correctLetter = document.getElementById(`option-letter-${correctIndex}`);
+            if (correctBtn && correctLetter) {
+                correctBtn.className = 'option-btn w-full text-left flex items-center gap-3.5 p-3.5 sm:p-4 rounded-2xl border-2 border-emerald-500 bg-emerald-50 shadow-sm';
+                correctLetter.className = 'w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-emerald-600 text-white font-display font-bold text-base sm:text-lg flex items-center justify-center flex-shrink-0';
+            }
+        }
+
+        function showFeedback(status, icon, title, explanation) {
+            const feedbackBox = document.getElementById('feedback-box');
+            const feedbackIcon = document.getElementById('feedback-icon');
+            const feedbackTitle = document.getElementById('feedback-title');
+            const feedbackExp = document.getElementById('feedback-explanation');
+            const btnNextText = document.getElementById('btn-next-text');
+
+            feedbackBox.classList.remove('hidden', 'bg-emerald-50', 'border-emerald-300', 'text-emerald-900', 'bg-rose-50', 'border-rose-300', 'text-rose-900', 'bg-amber-50', 'border-amber-300', 'text-amber-900');
+
+            if (status === 'correct') {
+                feedbackBox.classList.add('bg-emerald-50', 'border-emerald-300', 'text-emerald-900');
+            } else if (status === 'wrong') {
+                feedbackBox.classList.add('bg-rose-50', 'border-rose-300', 'text-rose-900');
+            } else {
+                feedbackBox.classList.add('bg-amber-50', 'border-amber-300', 'text-amber-900');
+            }
+
+            feedbackIcon.textContent = icon;
+            feedbackTitle.textContent = title;
+            feedbackExp.textContent = explanation;
+
+            if (currentQuestionIndex === quizData.length - 1) {
+                btnNextText.textContent = 'LIHAT HASIL AKHIR';
+            } else {
+                btnNextText.textContent = 'SOAL BERIKUTNYA';
+            }
+
+            // Scroll halus ke pembahasan pada layar mobile kecil
+            setTimeout(() => {
+                feedbackBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 100);
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < quizData.length) {
+                renderQuestion();
+            } else {
+                showFinalResult();
+            }
+        }
+
+        // ==========================================
+        // 6. HALAMAN HASIL AKHIR & PREDIKAT
+        // ==========================================
+        function showFinalResult() {
+            clearInterval(timerInterval);
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+
+            const totalQuestions = quizData.length;
+            const correctCount = userHistory.filter(item => item.isCorrect).length;
+            const wrongCount = totalQuestions - correctCount;
+            const percentage = Math.round((score / 100) * 100);
+
+            document.getElementById('final-score').textContent = score;
+            document.getElementById('final-percent').textContent = `${percentage}%`;
+            document.getElementById('final-correct').textContent = correctCount;
+            document.getElementById('final-wrong').textContent = wrongCount;
+
+            // Tentukan Predikat sesuai Aturan:
+            // 90–100: Sangat Hebat!
+            // 80–89: Hebat!
+            // 70–79: Bagus!
+            // Di bawah 70: Ayo Belajar Lagi!
+            const banner = document.getElementById('result-banner');
+            const badge = document.getElementById('predicate-badge');
+            const title = document.getElementById('predicate-title');
+            const desc = document.getElementById('predicate-desc');
+
+            banner.className = 'p-6 sm:p-8 text-center text-white relative overflow-hidden ';
+
+            if (score >= 90) {
+                banner.classList.add('bg-gradient-to-r', 'from-teal-600', 'via-emerald-600', 'to-amber-500');
+                badge.textContent = '🏆';
+                title.textContent = 'Sangat Hebat!';
+                desc.textContent = 'Luar biasa! Kamu adalah Duta Muda Budaya Nusantara yang memahami nilai-nilai tradisi, kearifan lokal, dan jati diri bangsa dengan sangat baik.';
+                playSound('finish');
+                launchConfetti(90);
+            } else if (score >= 80) {
+                banner.classList.add('bg-gradient-to-r', 'from-blue-600', 'via-teal-600', 'to-emerald-500');
+                badge.textContent = '🥇';
+                title.textContent = 'Hebat!';
+                desc.textContent = 'Kerja bagus! Wawasanmu tentang kekayaan tradisi dan budaya Indonesia sudah sangat kuat. Pertahankan semangat belajarmu!';
+                playSound('finish');
+                launchConfetti(60);
+            } else if (score >= 70) {
+                banner.classList.add('bg-gradient-to-r', 'from-amber-500', 'via-orange-500', 'to-yellow-500');
+                badge.textContent = '🎖️';
+                title.textContent = 'Bagus!';
+                desc.textContent = 'Hasil yang baik! Kamu sudah menguasai sebagian besar materi budaya Nusantara. Pelajari kembali beberapa soal yang terlewat agar makin maksimal.';
+                playSound('correct');
+            } else {
+                banner.classList.add('bg-gradient-to-r', 'from-rose-600', 'via-orange-600', 'to-amber-600');
+                badge.textContent = '📚';
+                title.textContent = 'Ayo Belajar Lagi!';
+                desc.textContent = 'Jangan menyerah! Petualangan mengenal budaya Nusantara baru saja dimulai. Coba mainkan kembali dan baca setiap pembahasan dengan cermat.';
+                playSound('wrong');
+            }
+
+            // Render Rekap Per Nomor Soal
+            const recapGrid = document.getElementById('recap-grid');
+            recapGrid.innerHTML = '';
+
+            userHistory.forEach((item, idx) => {
+                const pill = document.createElement('div');
+                pill.title = `Soal ${idx + 1}: ${item.isCorrect ? 'Benar' : 'Kurang Tepat'}`;
+                pill.className = item.isCorrect
+                    ? 'bg-emerald-500 text-white font-display font-bold text-sm py-2 rounded-xl text-center shadow-sm'
+                    : 'bg-rose-500 text-white font-display font-bold text-sm py-2 rounded-xl text-center shadow-sm';
+                pill.textContent = `${idx + 1} ${item.isCorrect ? '✓' : '✕'}`;
+                recapGrid.appendChild(pill);
+            });
+        }
+
+        function restartQuiz() {
+            startQuiz();
+        }
+    </script>
+</body>
+</html>
